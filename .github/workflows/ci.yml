@@ -52,3 +52,7 @@ jobs:
         uses: arduino/setup-protoc@v3
 
       - run: ./scripts/test.sh
+        if: matrix.os == 'ubuntu-latest'
+
+      - run: cargo test
+        if: matrix.os == 'windows-latest'

@@ -22,13 +22,9 @@ else
 fi
 
 print_help_and_exit() {
-	echo "Setup script for installing deno
+	echo "Setup script for installing SchemaJS
 
 Options:
-  -y, --yes
-    Skip interactive prompts and accept defaults
-  --no-modify-path
-    Don't add deno to the PATH environment variable
   -h, --help
     Print help
 "
@@ -61,7 +57,7 @@ fi
 
 
 sjs_uri="https://github.com/Schema-JS/schema-js/releases/download/v${sjs_version}/schemajs-${target}.zip"
-sjs_install="${DENO_INSTALL:-$HOME/.schemajs}"
+sjs_install="${SJS_INSTALL:-$HOME/.schemajs}"
 bin_dir="$sjs_install/bin"
 exe="$bin_dir/schemajs"
 
@@ -77,6 +73,22 @@ else
 fi
 chmod +x "$exe"
 rm "$exe.zip"
+
+case "$SHELL" in
+*/bash)
+	echo "export PATH=\"$bin_dir:\$PATH\"" >> "$HOME/.bashrc"
+	;;
+*/zsh)
+	echo "export PATH=\"$bin_dir:\$PATH\"" >> "$HOME/.zshrc"
+	;;
+*/fish)
+	echo "set -Ua fish_user_paths \"$bin_dir\"" >> "$HOME/.config/fish/config.fish"
+	;;
+*)
+	echo "Warning: Could not detect shell type. To use SchemaJS, add the following line to your shell's configuration file:"
+	echo "  export PATH=\"$bin_dir:\$PATH\""
+	;;
+esac
 
 echo "SchemaJS was installed successfully to $exe"
 echo
